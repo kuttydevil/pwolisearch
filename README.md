@@ -1,4 +1,4 @@
-<h1 align='center'>Torrent Searcher API with Website 🔥</h1>
+<h1 align='center'>pwolisearch API with Website 🔥</h1>
 
 
 
@@ -36,24 +36,24 @@ $ npm start
 
 | Website        | Keyword                                        | Url                               | Example                                                                                         |
 | -------------- | ---------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| 1337x          | 1337x                                          | <https://1337xx.to>                 | [/api/1337x/avengers](https://itorrentsearch.vercel.app/api/1337x/avengers)                   |
-| Yts            | yts                                            | <https://yts.mx>                    | [/api/yts/avengers](https://itorrentsearch.vercel.app/api/yts/avengers)                       |
-| Eztv           | eztv                                           | <https://eztv.re>                   | [/api/eztv/avengers](https://itorrentsearch.vercel.app/api/eztv/avengers)                     |
-| Torrent Galaxy | tgx                                            | <https://torrentgalaxy.to>          | [/api/tgx/avengers](https://itorrentsearch.vercel.app/api/tgx/avengers)                       |
-| Torlock        | torlock                                        | <https://www.torlock.com>           | [/api/torlock/avengers](https://itorrentsearch.vercel.app/api/torlock/avengers)               |
-| PirateBay      | piratebay                                      | <https://thehiddenbay.com>          | [/api/piratebay/avengers](https://itorrentsearch.vercel.app/api/piratebay/avengers)           |
-| Nyaasi      | nyaasi                                         | <https://nyaa.si>                   | [/api/nyaasi/umaru](https://itorrentsearch.vercel.app/api/nyaasi/umaru)                       |
-| Rarbg          | rarbg                                          | <https://rargb.to>                  | [/api/rarbg/avengers](https://itorrentsearch.vercel.app/api/rarbg/avengers)                   |
-| Ettv           | ettv                                           | <https://www.ettvcentral.com>       | [/api/ettv/avengers](https://itorrentsearch.vercel.app/api/ettv/avengers)                     |
-| Zooqle         | zooqle                                         | <https://zooqle.com>                | [/api/zooqle/avengers](https://itorrentsearch.vercel.app/api/zooqle/avengers)                 |
-| KickAss        | kickass                                        | <https://kickasstorrents.to>        | [/api/kickass/avengers](https://itorrentsearch.vercel.app/api/kickass/avengers)               |
-| Bitsearch      | bitsearch                                      | <https://bitsearch.to>              | [/api/bitsearch/avengers](https://itorrentsearch.vercel.app/api/bitsearch/avengers)           |
-| Glodls         | glodls                                         | <https://glodls.to/home.php>        | [/api/glodls/avengers](https://itorrentsearch.vercel.app/api/glodls/avengers)                 |
-| MagnetDL       | magnetdl                                       | <https://www.magnetdl.com>          | [/api/magnetdl/avengers](https://itorrentsearch.vercel.app/api/magnetdl/avengers)             |
-| LimeTorrent    | limetorrent                                    | <https://www.limetorrents.pro/home> | [/api/limetorrent/avengers](https://itorrentsearch.vercel.app/api/limetorrent/avengers)       |
-| TorrentFunk    | torrentfunk                                    | <https://www.torrentfunk.com>       | [/api/torrentfunk/avengers](https://itorrentsearch.vercel.app/api/torrentfunk/avengers)       |
-| TorrentProject | torrentproject                                 | <https://torrentproject2.com>       | [/api/torrentproject/avengers](https://itorrentsearch.vercel.app/api/torrentproject/avengers) |
-| all            | all (It will retrieve torrent from every site) |                                   | [/api/all/avengers](https://itorrentsearch.vercel.app/api/all/avengers)                       |
+| 1337x          | 1337x                                          | <https://1337xx.to>                 | [/api/1337x/avengers](https://pwolisearch.vercel.app/api/1337x/avengers)                   |
+| Yts            | yts                                            | <https://yts.mx>                    | [/api/yts/avengers](https://pwolisearch.vercel.app/api/yts/avengers)                       |
+| Eztv           | eztv                                           | <https://eztv.re>                   | [/api/eztv/avengers](https://pwolisearch.vercel.app/api/eztv/avengers)                     |
+| Torrent Galaxy | tgx                                            | <https://torrentgalaxy.to>          | [/api/tgx/avengers](https://pwolisearch.vercel.app/api/tgx/avengers)                       |
+| Torlock        | torlock                                        | <https://www.torlock.com>           | [/api/torlock/avengers](https://pwolisearch.vercel.app/api/torlock/avengers)               |
+| PirateBay      | piratebay                                      | <https://thehiddenbay.com>          | [/api/piratebay/avengers](https://pwolisearch.vercel.app/api/piratebay/avengers)           |
+| Nyaasi      | nyaasi                                         | <https://nyaa.si>                   | [/api/nyaasi/umaru](https://pwolisearch.vercel.app/api/nyaasi/umaru)                       |
+| Rarbg          | rarbg                                          | <https://rargb.to>                  | [/api/rarbg/avengers](https://pwolisearch.vercel.app/api/rarbg/avengers)                   |
+| Ettv           | ettv                                           | <https://www.ettvcentral.com>       | [/api/ettv/avengers](https://pwolisearch.vercel.app/api/ettv/avengers)                     |
+| Zooqle         | zooqle                                         | <https://zooqle.com>                | [/api/zooqle/avengers](https://pwolisearch.vercel.app/api/zooqle/avengers)                 |
+| KickAss        | kickass                                        | <https://kickasstorrents.to>        | [/api/kickass/avengers](https://pwolisearch.vercel.app/api/kickass/avengers)               |
+| Bitsearch      | bitsearch                                      | <https://bitsearch.to>              | [/api/bitsearch/avengers](https://pwolisearch.vercel.app/api/bitsearch/avengers)           |
+| Glodls         | glodls                                         | <https://glodls.to/home.php>        | [/api/glodls/avengers](https://pwolisearch.vercel.app/api/glodls/avengers)                 |
+| MagnetDL       | magnetdl                                       | <https://www.magnetdl.com>          | [/api/magnetdl/avengers](https://pwolisearch.vercel.app/api/magnetdl/avengers)             |
+| LimeTorrent    | limetorrent                                    | <https://www.limetorrents.pro/home> | [/api/limetorrent/avengers](https://pwolisearch.vercel.app/api/limetorrent/avengers)       |
+| TorrentFunk    | torrentfunk                                    | <https://www.torrentfunk.com>       | [/api/torrentfunk/avengers](https://pwolisearch.vercel.app/api/torrentfunk/avengers)       |
+| TorrentProject | torrentproject                                 | <https://torrentproject2.com>       | [/api/torrentproject/avengers](https://pwolisearch.vercel.app/api/torrentproject/avengers) |
+| all            | all (It will retrieve torrent from every site) |                                   | [/api/all/avengers](https://pwolisearch.vercel.app/api/all/avengers)                       |
 
 ---
 
@@ -149,12 +149,12 @@ $ npm start
 ## 🔍Want to try this API ?
 
 ```
-https://itorrentsearch.vercel.app/api/{keyword}/{query}/{page(optional)}
+https://pwolisearch.vercel.app/api/{keyword}/{query}/{page(optional)}
 ```
 
 🔰Example
 ```
-https://itorrentsearch.vercel.app/api/1337x/avengers/3
+https://pwolisearch.vercel.app/api/1337x/avengers/3
 ```
 
 ---
@@ -179,7 +179,7 @@ You can fork the repo and deploy on VPS
 
 [![Deploy with Vercel](https://svgshare.com/i/dzC.svg)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftheriturajps%2FTorrent-Search-API%2Ftree%2Fvercel)
 
-### Deploy on Netlify (API + Torrent Searcher Website)
+### Deploy on Netlify (API + pwolisearch Website)
 
 [![Deploy on netlify](https://svgshare.com/i/dwj.svg)](https://github.com/theriturajps/Torrent-Search-API/tree/netlify)
 
