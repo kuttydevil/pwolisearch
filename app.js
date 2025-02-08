@@ -19,6 +19,7 @@ const limeTorrent = require('./torrent/limeTorrent');
 const torrentFunk = require('./torrent/torrentFunk');
 const torrentProject = require('./torrent/torrentProject');
 
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,224 +31,342 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
     let query = req.params.query;
     let page = req.params.page;
 
-    // Helper function for LESS STRICT filtering
-    function filterResults(results, query) {
-        if (!results) {
-            return [];
-        }
-        const queryWords = query.toLowerCase().split(/\s+/);
-
-        return results.filter(item => {
-            if (!item || !item.name) {
-                return false;
-            }
-            const title = item.name.toLowerCase();
-            // Use 'some' instead of 'every' - match ANY word
-            return queryWords.some(word => title.includes(word));
-        });
-    }
-
-    // --- Scraper calls (using the new filterResults) ---
     if (website === '1337x') {
         if (page > 50) {
-            return res.json({ error: 'Please enter page value less than 51' });
-        }
-        scrap1337x.torrent1337x(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
-    }
+            return res.json({
+                error: 'Please enter page  value less than 51 to get the result :)'
+            })
+        } else {
+            scrap1337x.torrent1337x(query, page)
+                .then((data) => {
+                    if (data === null) {
+                        return res.json({
+                            error: 'Website is blocked change IP'
+                        })
 
+                    } else if (data.length === 0) {
+                        return res.json({
+                            error: 'No search result available for query (' + query + ')'
+                        })
+                    } else {
+                        return res.send(data);
+                    }
+
+                })
+        }
+    }
     if (website === 'yts') {
         scrapYts.yts(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
-    }
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
 
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
+    }
     if (website === 'eztv') {
         scrapEzTVio.ezTV(query)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
     }
     if (website === 'torlock') {
         scrapTorLock.torLock(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
     }
     if (website === 'piratebay') {
         scrapPirateBay.pirateBay(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
     }
     if (website === 'tgx') {
         torrentGalaxy(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
     }
 
     if (website === 'rarbg') {
         rarbg(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
     }
+
 
     if (website === 'zooqle') {
         zooqle.zooqle(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
 
     if (website === 'kickass') {
         kickAss(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
+
 
     if (website === 'bitsearch') {
         bitSearch(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
     if (website === 'glodls') {
         glodls(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
     if (website === 'magnetdl') {
         magnet_dl(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
     if (website === 'limetorrent') {
         limeTorrent(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
     if (website === 'torrentfunk') {
         torrentFunk(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
     if (website === 'torrentproject') {
         torrentProject(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+            })
     }
 
     if (website === 'nyaasi') {
         if (page > 14) {
-            return res.json({ error: '14 is the last page' });
+            return res.json({
+                error: '14 is the last page'
+            })
+        } else {
+            scrapNyaa.nyaaSI(query, page)
+                .then((data) => {
+                    if (data === null) {
+                        return res.json({
+                            error: 'Website is blocked change IP'
+                        })
+
+                    } else if (data.length === 0) {
+                        return res.json({
+                            error: 'No search result available for query (' + query + ')'
+                        })
+                    } else {
+                        return res.send(data);
+                    }
+
+                })
         }
-        scrapNyaa.nyaaSI(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+
     }
     if (website === "ettv") {
         ettvCentral(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const filteredData = filterResults(data, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+            .then((data) => {
+                if (data === null) {
+                    return res.json({
+                        error: 'Website is blocked change IP'
+                    })
+
+                } else if (data.length === 0) {
+                    return res.json({
+                        error: 'No search result available for query (' + query + ')'
+                    })
+                } else {
+                    return res.send(data);
+                }
+
+            })
 
     }
     if (website === "all") {
-        combo(query, page)
-            .then(data => {
-                if (!data) return res.json({ error: 'Website is blocked or no results' });
-                const flattenedData = data.flat(); // Flatten for 'all'
-                const filteredData = filterResults(flattenedData, query);
-                if (filteredData.length === 0) return res.json({ error: 'No matching results' });
-                res.json(filteredData);
-            }).catch(next);
-        return;
+        combo(query, page).then((data) => {
+            if (data !== null && data.length > 0) {
+                return res.send(data);
+            } else {
+                return res.json({
+                    error: 'No search result available for query (' + query + ')'
+                });
+            }
+        })
+
+    } else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'eztv' && website !== 'tgx' && website !== 'all' && website !== "rarbg" && website !== 'ettv' && website !== 'zooqle' && website !== 'kickass' && website !== 'bitsearch' && website !== 'glodls' && website !== 'magnetdl' && website !== 'limetorrent' && website !== 'torrentfunk' && website !== 'torrentproject') {
+        return res.json({
+            error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | all (to scrap from every site)'
+        })
     }
 
-    // If none of the above matched, the website is invalid
-    return res.json({
-        error: 'Please select a valid website: 1337x, nyaasi, yts, piratebay, torlock, eztv, tgx, rarbg, zooqle, kickass, bitsearch, glodls, magnetdl, limetorrent, torrentfunk, torrentproject, or all'
-    });
 });
 
 app.use('/', (req, res) => {
