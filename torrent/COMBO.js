@@ -15,7 +15,6 @@ const limeTorrent = require('./limeTorrent');
 const torrentFunk = require('./torrentFunk');
 const torrentProject = require('./torrentProject');
 
-
 async function combo(query, page) {
     try {
         const results = await Promise.all([
@@ -37,7 +36,7 @@ async function combo(query, page) {
             torrentProject(query, page).catch(e => { console.error("torrentProject error:", e); return []; })
         ]);
 
-        // Use flatMap to combine results.  No need for null check now.
+        // Use flatMap to combine results and handle nulls/undefined
         const flattenedResults = results.flat();
         return flattenedResults;
 
