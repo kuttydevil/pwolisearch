@@ -34,9 +34,8 @@ async function combo(query, page) {
             limeTorrent(query, page).catch(e => { console.error("limeTorrent error:", e); return []; }),
             torrentFunk(query, page).catch(e => { console.error("torrentFunk error:", e); return []; }),
             torrentProject(query, page).catch(e => { console.error("torrentProject error:", e); return []; })
-        ]);
+        ].map(promise => Promise.resolve(promise).then(value => value === null || value === undefined ? [] : value ))); //THIS IS THE FIX
 
-        // Use flatMap to combine results and handle nulls/undefined
         const flattenedResults = results.flat();
         return flattenedResults;
 
