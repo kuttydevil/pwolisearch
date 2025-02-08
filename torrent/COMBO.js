@@ -17,77 +17,33 @@ const torrentProject = require('./torrentProject');
 
 
 async function combo(query, page) {
-    let comboTorrent = []
-    await Promise.all([
-            torrentGalaxy(query, page),
-            scrapNyaa.nyaaSI(query, page),
-            scrapYts.yts(query, page),
-            scrapPirateBay.pirateBay(query, page),
-            scrapTorLock.torLock(query, page),
-            scrapEzTVio.ezTV(query),
-            scrap1337x.torrent1337x(query, page),
-            rarbg(query, page),
-            zooqle.zooqle(query, page),
-            kickAss(query, page),
-            bitSearch(query, page),
-            glodls(query, page),
-            magnet_dl(query, page),
-            limeTorrent(query, page),
-            torrentFunk(query, page),
-            torrentProject(query, page)
+    try {
+        const results = await Promise.all([
+            torrentGalaxy(query, page).catch(e => { console.error("torrentGalaxy error:", e); return []; }),
+            scrapNyaa.nyaaSI(query, page).catch(e => { console.error("nyaaSI error:", e); return []; }),
+            scrapYts.yts(query, page).catch(e => { console.error("yts error:", e); return []; }),
+            scrapPirateBay.pirateBay(query, page).catch(e => { console.error("pirateBay error:", e); return []; }),
+            scrapTorLock.torLock(query, page).catch(e => { console.error("torLock error:", e); return []; }),
+            scrapEzTVio.ezTV(query).catch(e => { console.error("ezTV error:", e); return []; }),
+            scrap1337x.torrent1337x(query, page).catch(e => { console.error("1337x error:", e); return []; }),
+            rarbg(query, page).catch(e => { console.error("rarbg error:", e); return []; }),
+            zooqle.zooqle(query, page).catch(e => { console.error("zooqle error:", e); return []; }),
+            kickAss(query, page).catch(e => { console.error("kickAss error:", e); return []; }),
+            bitSearch(query, page).catch(e => { console.error("bitSearch error:", e); return []; }),
+            glodls(query, page).catch(e => { console.error("glodls error:", e); return []; }),
+            magnet_dl(query, page).catch(e => { console.error("magnet_dl error:", e); return []; }),
+            limeTorrent(query, page).catch(e => { console.error("limeTorrent error:", e); return []; }),
+            torrentFunk(query, page).catch(e => { console.error("torrentFunk error:", e); return []; }),
+            torrentProject(query, page).catch(e => { console.error("torrentProject error:", e); return []; })
+        ]);
 
-        ])
-        .then(([tgx, nyaasi, yts, piratebay, torlock, eztv, x1337, rarbg, zql, kick, bts, glo, mg_dl, lmt, tfk, tpj]) => {
+        // Use flatMap to combine results.  No need for null check now.
+        const flattenedResults = results.flat();
+        return flattenedResults;
 
-            if (tgx !== null && tgx.length > 0) {
-                comboTorrent.push(tgx);
-            }
-            if (nyaasi !== null && nyaasi.length > 0) {
-                comboTorrent.push(nyaasi);
-            }
-            if (yts !== null && yts.length > 0) {
-                comboTorrent.push(yts);
-            }
-            if (piratebay !== null && piratebay.length > 0) {
-                comboTorrent.push(piratebay);
-            }
-            if (torlock !== null && torlock.length > 0) {
-                comboTorrent.push(torlock);
-            }
-            if (eztv !== null && eztv.length > 0) {
-                comboTorrent.push(eztv);
-            }
-            if (x1337 !== null && x1337.length > 0) {
-                comboTorrent.push(x1337);
-            }
-            if (rarbg !== null && rarbg.length > 0) {
-                comboTorrent.push(rarbg);
-            }
-            if (zql !== null && zql.length > 0) {
-                comboTorrent.push(zql);
-            }
-            if (kick !== null && kick.length > 0) {
-                comboTorrent.push(kick);
-            }
-            if (bts !== null && bts.length > 0) {
-                comboTorrent.push(bts);
-            }
-            if (glo !== null && glo.length > 0) {
-                comboTorrent.push(glo);
-            }
-            if (mg_dl !== null && mg_dl.length > 0) {
-                comboTorrent.push(mg_dl);
-            }
-            if (lmt !== null && lmt.length > 0) {
-                comboTorrent.push(lmt);
-            }
-            if (tfk !== null && tfk.length > 0) {
-                comboTorrent.push(tfk);
-            }
-            if (tpj !== null && tpj.length > 0) {
-                comboTorrent.push(tpj);
-            }
-        })
-    return comboTorrent;
+    } catch (error) {
+        console.error("An error occurred in combo:", error);
+        return []; // Return an empty array in case of a general error
+    }
 }
 module.exports = combo;
