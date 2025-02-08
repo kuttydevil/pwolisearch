@@ -250,12 +250,10 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
         return;
     }
 
-    // ... (rest of your website checks) ...
-    if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'eztv' && website !== 'tgx' && website !== 'all' && website !== "rarbg" && website !== 'ettv' && website !== 'zooqle' && website !== 'kickass' && website !== 'bitsearch' && website !== 'glodls' && website !== 'magnetdl' && website !== 'limetorrent' && website !== 'torrentfunk' && website !== 'torrentproject') {
-        return res.json({
-            error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | all (to scrap from every site)'
-        })
-    }
+    // If none of the above matched, the website is invalid
+    return res.json({
+        error: 'Please select a valid website: 1337x, nyaasi, yts, piratebay, torlock, eztv, tgx, rarbg, zooqle, kickass, bitsearch, glodls, magnetdl, limetorrent, torrentfunk, torrentproject, or all'
+    });
 });
 
 app.use('/', (req, res) => {
