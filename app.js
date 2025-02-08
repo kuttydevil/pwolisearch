@@ -19,7 +19,6 @@ const limeTorrent = require('./torrent/limeTorrent');
 const torrentFunk = require('./torrent/torrentFunk');
 const torrentProject = require('./torrent/torrentProject');
 
-
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,29 +30,24 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
     let query = req.params.query;
     let page = req.params.page;
 
-    // Helper function to filter results
+    // Helper function for LESS STRICT filtering
     function filterResults(results, query) {
         if (!results) {
-            return []; // Handle null or undefined results
+            return [];
         }
-        const queryWords = query.toLowerCase().split(/\s+/); // Split query into words
-        if (queryWords.length === 1) {
-            // Single word:  Match anywhere in the title (case-insensitive)
-            return results.filter(item => item && item.name && item.name.toLowerCase().includes(queryWords[0]));
-        } else {
-            // Multiple words: All words must be present in the title (case-insensitive), but not necessarily adjacent
-            return results.filter(item => {
-                if (!item || !item.name) {
-                    return false; // Skip items without a name
-                }
-                const title = item.name.toLowerCase();
-                return queryWords.every(word => title.includes(word));
-            });
-        }
+        const queryWords = query.toLowerCase().split(/\s+/);
+
+        return results.filter(item => {
+            if (!item || !item.name) {
+                return false;
+            }
+            const title = item.name.toLowerCase();
+            // Use 'some' instead of 'every' - match ANY word
+            return queryWords.some(word => title.includes(word));
+        });
     }
 
-
-    // --- Your existing scraper calls, modified to use the filter ---
+    // --- Scraper calls (using the new filterResults) ---
     if (website === '1337x') {
         if (page > 50) {
             return res.json({ error: 'Please enter page value less than 51' });
@@ -64,8 +58,8 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
                 const filteredData = filterResults(data, query);
                 if (filteredData.length === 0) return res.json({ error: 'No matching results' });
                 res.json(filteredData);
-            }).catch(next); // Use 'next' for proper error handling
-        return; // Important: Return after sending response
+            }).catch(next);
+        return;
     }
 
     if (website === 'yts') {
