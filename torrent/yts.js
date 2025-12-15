@@ -1,76 +1,64 @@
-const cheerio = require('cheerio');
 const axios = require('axios');
 
 async function yts(query, page = '1') {
-    let all = [];
-    let ALLURL = [];
-    
-    // 1. FIXED URL: YTS uses /browse-movies/ for search, not /movies/
-    const baseUrl = "https://yts.lt/browse-movies/";
-    const searchPath = `${query}/all/all/0/latest/0/all`;
-    const url = page === '1' || page === '' 
-        ? `${baseUrl}${searchPath}` 
-        : `${baseUrl}${searchPath}?page=${page}`;
+    // 1. Use the Official YTS API instead of scraping HTML
+    const url = `https://yts.mx/api/v2/list_movies.json?query_term=${query}&page=${page}`;
 
     try {
-        const response = await axios.get(url, {
-            headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-                "Accept-Language": "en-US,en;q=0.9",
-            }
-        });
+        const response = await axios.get(url);
+        
+        // 2. Validate response structure
+        if (!response.data || !response.data.data || !response.data.data.movies) {
+            return []; // Return empty array if no movies found
+        }
 
-        const $ = cheerio.load(response.data);
+        const movies = response.data.data.movies;
+        let all = [];
 
-        // 2. UPDATED SELECTOR: Find the movie links from the wrap container
-        $('.browse-movie-wrap').each((_, element) => {
-            let movieUrl = $(element).find('a.browse-movie-link').attr('href');
-            if (movieUrl) ALLURL.push(movieUrl);
-        });
+        // 3. Map API JSON to the format your Frontend expects
+        movies.forEach(movie => {
+            // Construct a standard tracker list for magnet links
+            const trackers = "&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969";
 
-        // Use Promise.all to fetch details for each movie
-        await Promise.all(ALLURL.map(async (movieUrl) => {
-            try {
-                const res = await axios.get(movieUrl, {
-                    headers: { "User-Agent": "Mozilla/5.0..." }
+            const data = {
+                'Name': movie.title,
+                'ReleasedDate': movie.year.toString(),
+                'Genre': movie.genres ? movie.genres.join(', ') : 'N/A',
+                'Rating': `${movie.rating} ⭐`,
+                'Likes': 'N/A', // API doesn't provide like count in list view
+                'Runtime': `${movie.runtime} min`,
+                'Language': movie.language,
+                'Url': movie.url,
+                'Poster': movie.medium_cover_image,
+                'Files': []
+            };
+
+            // 4. Process Torrents into Files array
+            if (movie.torrents) {
+                movie.torrents.forEach(torrent => {
+                    let files = {};
+                    files.Quality = torrent.quality;
+                    files.Type = torrent.type;
+                    files.Size = torrent.size;
+                    files.Torrent = torrent.url;
+                    // YTS API gives the hash, we must build the magnet link manually
+                    files.Magnet = `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(movie.title)}${trackers}`;
+                    
+                    data.Files.push(files);
                 });
-                const $$ = cheerio.load(res.data);
-
-                const data = {
-                    'Name': $$('div.hidden-xs h1').text().trim(),
-                    'ReleasedDate': $$('div.hidden-xs h2').eq(0).text().trim(),
-                    'Genre': $$('div.hidden-xs h2').eq(1).text().trim(),
-                    'Rating': $$('span[itemprop="ratingValue"]').text().trim() + ' ⭐',
-                    'Likes': $$('#movie-likes').text().trim(),
-                    'Runtime': $$('.tech-spec-element').contains('min').text().trim() || "N/A",
-                    'Language': $$('.tech-spec-element').first().text().trim(), // Usually first spec
-                    'Url': movieUrl,
-                    'Poster': $$('#movie-poster img').attr('src'),
-                    'Files': []
-                };
-
-                // 3. UPDATED TORRENT LOGIC: YTS usually lists torrents in a specific container
-                $$('.modal-download .modal-content .modal-torrent').each((_, ele) => {
-                    data.Files.push({
-                        Quality: $$(ele).find('.modal-quality').text().trim(),
-                        Type: $$(ele).find('p:contains("File type")').text().replace('File type:', '').trim(),
-                        Size: $$(ele).find('p:contains("File size")').text().replace('File size:', '').trim(),
-                        Torrent: $$(ele).find('a.download-torrent-button').attr('href'),
-                        Magnet: $$(ele).find('a.magnet-download').attr('href')
-                    });
-                });
-
-                all.push(data);
-            } catch (err) {
-                // Individual movie page failed (likely Cloudflare block)
             }
-        }));
+            all.push(data);
+        });
 
         return all;
+
     } catch (error) {
-        console.error("Error fetching YTS search results:", error.message);
+        // Return null to indicate a network/blocking error (handled in app.js)
+        console.error("YTS API Error:", error.message);
         return null;
     }
 }
 
-module.exports = { yts };
+module.exports = {
+    yts: yts
+};
