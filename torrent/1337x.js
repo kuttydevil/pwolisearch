@@ -4,28 +4,31 @@ const axios = require('axios');
 async function torrent1337x(query = '', page = '1') {
     const allTorrent = [];
     
-    // 1. UPDATE THE DOMAIN
-    // The previous domain '1337xx.to' is dead/blocked.
-    // '1337x.to' is the official one. '1337x.st' is a common mirror.
-    // If you specifically want to use '.icu', change this to 'https://1337x.icu'
-    const domain = 'https://1337x.icu'; 
+    // 1. USE A MIRROR DOMAIN
+    // .to is heavily blocked. .st, .ws, .se are official mirrors.
+    // .st usually works better for scraping.
+    const domain = 'https://1337x.st'; 
     
     const url = `${domain}/search/${query}/${page}/`;
 
+    // 2. ENHANCED HEADERS to bypass 403 Forbidden
+    const headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": `${domain}/`,
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1"
+    };
+
     try {
-        const html = await axios.get(url, {
-            // 2. ADD HEADERS to avoid "Website is blocked" error
-            headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-            }
-        });
-
+        const html = await axios.get(url, { headers: headers });
         const $ = cheerio.load(html.data);
-
         const links = [];
-        // Extract links from the search results table
+
+        // Extract search result links
         $('table.table-list tr').each((_, element) => {
-            // In 1337x, the second link inside td.name is the torrent link
             const linkTag = $(element).find('td.name a').eq(1); 
             let link = linkTag.attr('href');
             if (link) {
@@ -36,15 +39,11 @@ async function torrent1337x(query = '', page = '1') {
             }
         });
 
-        // 3. FETCH DETAILS FOR EACH LINK
+        // 3. FETCH DETAILS (Sequential loop is safer for 403 than Promise.all)
+        // We use Promise.all here for speed, but if it fails again, we might need to slow it down.
         await Promise.all(links.map(async (linkUrl) => {
             try {
-                const detailHtml = await axios.get(linkUrl, {
-                    headers: {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-                    }
-                });
-                
+                const detailHtml = await axios.get(linkUrl, { headers: headers });
                 const $$ = cheerio.load(detailHtml.data);
                 const data = {};
 
@@ -75,15 +74,15 @@ async function torrent1337x(query = '', page = '1') {
                 }
 
             } catch (err) {
-                // Skip this single torrent if it fails
+                // If specific page fails, just skip it
             }
         }));
 
         return allTorrent;
 
     } catch (error) {
-        // This causes the "Website is blocked change IP" message in app.js
-        console.error("1337x Main Search Error:", error.message);
+        // If the main search page returns 403, we log it
+        console.error(`1337x Error (${domain}):`, error.message);
         return null;
     }
 }
