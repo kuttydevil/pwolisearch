@@ -8,7 +8,7 @@ async function torrent1337x(query = '', page = '1') {
     // The previous domain '1337xx.to' is dead/blocked.
     // '1337x.to' is the official one. '1337x.st' is a common mirror.
     // If you specifically want to use '.icu', change this to 'https://1337x.icu'
-    const domain = 'https://1337x.to'; 
+    const domain = 'https://1337x.icu'; 
     
     const url = `${domain}/search/${query}/${page}/`;
 
