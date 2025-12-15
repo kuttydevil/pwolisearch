@@ -4,30 +4,33 @@ const axios = require('axios');
 async function torrent1337x(query = '', page = '1') {
     const allTorrent = [];
     
-    // 1. USE A MIRROR DOMAIN
-    // .to is heavily blocked. .st, .ws, .se are official mirrors.
-    // .st usually works better for scraping.
-    const domain = 'https://1337x.st'; 
+    // 1. USE A DIFFERENT MIRROR
+    // 'x1337x.ws' or 'x1337x.se' or '1337x.so' often have less Cloudflare protection than .to
+    const domain = 'https://x1337x.ws'; 
     
     const url = `${domain}/search/${query}/${page}/`;
 
-    // 2. ENHANCED HEADERS to bypass 403 Forbidden
-    const headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Referer": `${domain}/`,
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1"
-    };
-
     try {
-        const html = await axios.get(url, { headers: headers });
-        const $ = cheerio.load(html.data);
-        const links = [];
+        const response = await axios.get(url, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Referer": domain
+            }
+        });
 
-        // Extract search result links
+        const $ = cheerio.load(response.data);
+
+        // 2. CHECK FOR CLOUDFLARE BLOCK
+        if ($('title').text().includes("Just a moment") || $('title').text().includes("Cloudflare")) {
+            console.log("1337x Blocked by Cloudflare on this mirror.");
+            return null; // Return null so app.js sends the error message
+        }
+
+        const links = [];
+        
+        // Extract links
         $('table.table-list tr').each((_, element) => {
             const linkTag = $(element).find('td.name a').eq(1); 
             let link = linkTag.attr('href');
@@ -39,12 +42,16 @@ async function torrent1337x(query = '', page = '1') {
             }
         });
 
-        // 3. FETCH DETAILS (Sequential loop is safer for 403 than Promise.all)
-        // We use Promise.all here for speed, but if it fails again, we might need to slow it down.
+        // 3. FETCH DETAILS
         await Promise.all(links.map(async (linkUrl) => {
             try {
-                const detailHtml = await axios.get(linkUrl, { headers: headers });
-                const $$ = cheerio.load(detailHtml.data);
+                const detailRes = await axios.get(linkUrl, {
+                    headers: {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    }
+                });
+                
+                const $$ = cheerio.load(detailRes.data);
                 const data = {};
 
                 data.Name = $$('.box-info-heading h1').text().trim();
@@ -58,7 +65,6 @@ async function torrent1337x(query = '', page = '1') {
                     data.Poster = '';
                 }
 
-                // Extract Metadata using specific list items
                 data.Category = $$('ul.list li:contains("Category") span').text().trim();
                 data.Type = $$('ul.list li:contains("Type") span').text().trim();
                 data.Language = $$('ul.list li:contains("Language") span').text().trim();
@@ -73,16 +79,13 @@ async function torrent1337x(query = '', page = '1') {
                     allTorrent.push(data);
                 }
 
-            } catch (err) {
-                // If specific page fails, just skip it
-            }
+            } catch (err) {}
         }));
 
         return allTorrent;
 
     } catch (error) {
-        // If the main search page returns 403, we log it
-        console.error(`1337x Error (${domain}):`, error.message);
+        console.error("1337x Error:", error.message);
         return null;
     }
 }
