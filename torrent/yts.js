@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function yts(query, page = '1') {
     // 1. Use the Official YTS API to avoid Cloudflare blocks
-    const url = `https://yts.mx/api/v2/list_movies.json?query_term=${query}&page=${page}`;
+    const url = `https://yts.lt/api/v2/list_movies.json?query_term=${query}&page=${page}`;
 
     try {
         const response = await axios.get(url);
